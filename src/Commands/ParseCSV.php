@@ -60,12 +60,18 @@ class ParseCSV extends Command
 
         // TODO: Load csv file
 
-        // TODO: Push data with the connector
-        $epics = $connector->call('GET', 'epics');
+        // TODO: Insert data on shortcut App
+        // Get project_id
+        $project = $connector->call('GET', 'projects');
+        $project_id = current($project)['id'];
 
-        $output->writeln(array_map(function ($data) {
-            return 'EPIC Name : ' . $data["name"];
-        }, $epics));
+        $data = [
+            'name' => 'Story from CLI',
+            'project_id' => $project_id,
+        ];
+
+        $story = $connector->call('POST', 'stories', $data, 'json');
+        var_dump($story);
 
         return Command::SUCCESS;
     }

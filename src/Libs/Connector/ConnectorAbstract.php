@@ -22,7 +22,8 @@ abstract class ConnectorAbstract
     /**
      * @param string $method
      * @param string $endPoint
-     * @param array $args
+     * @param array $body
+     * @param string $dataType
      * @return bool|array
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
@@ -30,7 +31,7 @@ abstract class ConnectorAbstract
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function call(string $method, string $endPoint, array $body = []): bool|array
+    public function call(string $method, string $endPoint, array $body = [], string $dataType = 'body'): bool|array
     {
         $header = $this->getHeader();
         $baseUrl = $this->getBaseUrl();
@@ -40,7 +41,7 @@ abstract class ConnectorAbstract
         ];
 
         if (!empty($body)) {
-            $options = array_push($options, ['body' => $body]);
+            $options[$dataType] = $body;
         }
 
         $response = $this->client->request($method, $baseUrl . $endPoint, $options);
