@@ -2,56 +2,53 @@
 
 namespace App\Libs\Connector;
 
-use App\Libs\Helper\CallCurl;
-use Exception;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 abstract class ConnectorAbstract
 {
-    protected ?CallCurl $client = null;
+    protected ?HttpClientInterface $client = null;
 
     public function __construct()
     {
-        $this->client = new CallCurl();
+        $this->client = HttpClient::create();
     }
 
     /**
      * @param string $method
      * @param string $endPoint
-     * @param array $postArgs
-     * @return array|bool
-     * @throws Exception
+     * @param array $args
+     * @return bool|array
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
      */
-    public function call(string $method, string $endPoint, array $postArgs = []): bool|array
+    public function call(string $method, string $endPoint, array $body = []): bool|array
     {
-        $curlOpts = $this->getCurlOpt();
-        $postData = $this->buildPost($postArgs);
+        $header = $this->getHeader();
         $baseUrl = $this->getBaseUrl();
 
-        $response = match ($method) {
-            'POST' => json_decode(
-                $this->client->callPost($baseUrl . $endPoint, $postData, $curlOpts),
-                true
-            ) ?? [],
-            'GET' => json_decode(
-                $this->client->callGet($baseUrl . $endPoint, $curlOpts),
-                true
-            ) ?? [],
-            default => [],
-        };
+        $options = [
+            'headers' => $header,
+        ];
 
-        return $this->parseCallResponse($response) ?? [];
+        if (!empty($body)) {
+            $options = array_push($options, ['body' => $body]);
+        }
+
+        $response = $this->client->request($method, $baseUrl . $endPoint, $options);
+
+        return $this->parseCallResponse($response->toArray());
     }
 
-    /**
-     * @param array $postArray
-     * @return string
-     */
-    protected function buildPost(array $postArray): string
-    {
-        return http_build_query($postArray);
-    }
-
-    abstract protected function getCurlOpt(): array;
+    abstract protected function getHeader(): array;
 
     abstract protected function getBaseUrl(): string;
 

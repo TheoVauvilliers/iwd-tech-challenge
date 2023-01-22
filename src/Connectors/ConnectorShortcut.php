@@ -19,7 +19,7 @@ class ConnectorShortcut extends ConnectorAbstract
     /**
      * @return array[]
      */
-    protected function getCurlOpt(): array
+    protected function getHeader(): array
     {
         if (empty($_ENV['API_SHORTCUT_TOKEN'])) {
             throw new \RuntimeException('The token must be defined in the .env file');
@@ -28,10 +28,9 @@ class ConnectorShortcut extends ConnectorAbstract
         $token = $_ENV['API_SHORTCUT_TOKEN'];
 
         return [
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json',
-                "Shortcut-Token: $token",
-            ],
+            'Content-Type: application/json',
+            'Cache-Control: no-cache',
+            "Shortcut-Token: $token",
         ];
     }
 
@@ -41,10 +40,6 @@ class ConnectorShortcut extends ConnectorAbstract
      */
     protected function parseCallResponse(array $response): array|bool
     {
-        if (isset($response['message']) && $response['message'] === 'Page not Found') {
-            return false;
-        }
-
         return $response;
     }
 }

@@ -9,6 +9,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 #[AsCommand(
     name: 'iwd:parse-csv',
@@ -35,7 +40,14 @@ class ParseCSV extends Command
     }
 
     /**
-     * @throws \Exception
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -46,18 +58,14 @@ class ParseCSV extends Command
         // TODO: Init the connector
         $connector = new ConnectorShortcut();
 
-        // Some tests
-        $epics = $connector->call('GET', 'epics');
-        var_dump($epics);
-
         // TODO: Load csv file
-        // TODO: Push data with the connector
 
-//        $output->writeln([
-//            'Parse CSV',
-//            '============',
-//            $output->writeln('CSV Path : ' . $input->getArgument('csv-path'))
-//        ]);
+        // TODO: Push data with the connector
+        $epics = $connector->call('GET', 'epics');
+
+        $output->writeln(array_map(function ($data) {
+            return 'EPIC Name : ' . $data["name"];
+        }, $epics));
 
         return Command::SUCCESS;
     }
