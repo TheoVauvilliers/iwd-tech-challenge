@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use App\Connectors\ConnectorShortcut;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -27,27 +28,36 @@ class ParseCSV extends Command
     {
         $this
             ->addArgument(
-                'csv-path',
+                'csv-name',
                 $this->requireFileName ? InputArgument::REQUIRED : InputArgument::OPTIONAL,
-                'The path from your location to the targeted csv'
+                'The name of the csv file in the public/uploads/ directory'
             );
     }
 
+    /**
+     * @throws \Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$output instanceof ConsoleOutputInterface) {
             throw new \LogicException('This command accepts only an instance of "ConsoleOutputInterface".');
         }
 
-        // TODO: Init the connector for Shortcut
+        // TODO: Init the connector
+        $connector = new ConnectorShortcut();
+
+        // Some tests
+        $epics = $connector->call('GET', 'epics');
+        var_dump($epics);
+
         // TODO: Load csv file
         // TODO: Push data with the connector
 
-        $output->writeln([
-            'Parse CSV',
-            '============',
-            $output->writeln('CSV Path : ' . $input->getArgument('csv-path'))
-        ]);
+//        $output->writeln([
+//            'Parse CSV',
+//            '============',
+//            $output->writeln('CSV Path : ' . $input->getArgument('csv-path'))
+//        ]);
 
         return Command::SUCCESS;
     }
