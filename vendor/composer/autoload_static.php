@@ -209,6 +209,9 @@ class ComposerStaticInit4c92daeaa0e85e14abcbb97e3cf74e5c
     );
 
     public static $classMap = array (
+        'App\\Commands\\ParseCSV' => __DIR__ . '/../..' . '/src/Commands/ParseCSV.php',
+        'App\\Connectors\\ConnectorShortcut' => __DIR__ . '/../..' . '/src/Connectors/ConnectorShortcut.php',
+        'App\\Kernel' => __DIR__ . '/../..' . '/src/Kernel.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
