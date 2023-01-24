@@ -20,9 +20,9 @@ class ParseCSV extends Command
 {
     // CSV => SHORCUT
     protected const MAPPING = [
-        'description' => '',
+        'description' => 'name',
         'status' => '',
-        'epic' => '',
+        'epic' => 'epic_id',
         'blocked by' => ''
     ];
     protected bool $requireFileName = true;
@@ -58,7 +58,7 @@ class ParseCSV extends Command
         // Transform csv in array
         $csv = new Csv();
         $data = $csv->read($input->getArgument('csv-name'));
-        var_dump($data);
+        $data = $csv->headerAsAssocArray($data);
 
         // Get epics and create an associative array
 //        $epics = $connector->call('GET', 'epics');
@@ -66,14 +66,12 @@ class ParseCSV extends Command
 //            $epics[$epic['name']] = $epic['id'];
 //            return $epics;
 //        }, []);
-//        var_dump($epics);
-
-        // TODO: Insert data on shortcut App
-        // Get project_id
+//
+//        // TODO: Insert data on shortcut App
+//        // Get project_id
 //        $project = $connector->call('GET', 'projects');
 //        $project_id = current($project)['id'];
-
-
+//
 //        $data = [
 //            'name' => 'Story from CLI',
 //            'project_id' => $project_id,

@@ -52,4 +52,14 @@ class Csv
 
         return $rows;
     }
+
+    public function headerAsAssocArray(array $rows, int $headerPosition = 0): array
+    {
+        $header = $rows[$headerPosition];
+        unset($rows[$headerPosition]);
+
+        return array_map(function ($row) use ($header) {
+            return array_combine($header, $row);
+        }, $rows);
+    }
 }
