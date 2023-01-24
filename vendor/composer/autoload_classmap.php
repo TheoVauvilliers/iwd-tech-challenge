@@ -10,7 +10,6 @@ return array(
     'App\\Connectors\\ConnectorShortcut' => $baseDir . '/src/Connectors/ConnectorShortcut.php',
     'App\\Kernel' => $baseDir . '/src/Kernel.php',
     'App\\Libs\\Connector\\ConnectorAbstract' => $baseDir . '/src/Libs/Connector/ConnectorAbstract.php',
-    'App\\Libs\\Helper\\CallCurl' => $baseDir . '/src/Libs/Helper/CallCurl.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'JsonException' => $vendorDir . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
