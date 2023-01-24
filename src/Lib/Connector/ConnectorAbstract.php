@@ -20,18 +20,19 @@ abstract class ConnectorAbstract
     }
 
     /**
-     * @param string $method
-     * @param string $endPoint
-     * @param array $body
-     * @param string $dataType
-     * @return bool|array
+     * Used to make an API call
+     * @param string $method HTTP Method
+     * @param string $endPoint (Do not insert / at the beginning of your endpoint)
+     * @param array $body of your request
+     * @param string $dataType of your request
+     * @return array
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function call(string $method, string $endPoint, array $body = [], string $dataType = 'body'): bool|array
+    public function call(string $method, string $endPoint, array $body = [], string $dataType = 'body'): array
     {
         $header = $this->getHeader();
         $baseUrl = $this->getBaseUrl();
@@ -49,9 +50,22 @@ abstract class ConnectorAbstract
         return $this->parseCallResponse($response->toArray());
     }
 
+    /**
+     * Get header for connector
+     * @return array
+     */
     abstract protected function getHeader(): array;
 
+    /**
+     * Get base url for connector
+     * @return string
+     */
     abstract protected function getBaseUrl(): string;
 
-    abstract protected function parseCallResponse(array $response): array|bool;
+    /**
+     * Allows you to parse the API response before rendering it
+     * @param array $response API Response
+     * @return array
+     */
+    abstract protected function parseCallResponse(array $response): array;
 }

@@ -9,7 +9,7 @@ class ConnectorShortcut extends ConnectorAbstract
     protected const API_BASE_URL = 'https://api.app.shortcut.com/api/v3/';
 
     /**
-     * @return string
+     * @inheritDoc
      */
     protected function getBaseUrl(): string
     {
@@ -17,7 +17,7 @@ class ConnectorShortcut extends ConnectorAbstract
     }
 
     /**
-     * @return array[]
+     * @inheritDoc
      */
     protected function getHeader(): array
     {
@@ -35,10 +35,9 @@ class ConnectorShortcut extends ConnectorAbstract
     }
 
     /**
-     * @param array $response
-     * @return array|bool
+     * @inheritDoc
      */
-    protected function parseCallResponse(array $response): array|bool
+    protected function parseCallResponse(array $response): array
     {
         return $response;
     }
