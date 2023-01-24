@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Connectors;
+namespace App\Service\Connector;
 
-use App\Libs\Connector\ConnectorAbstract;
+use App\Lib\Connector\ConnectorAbstract;
 
 class ConnectorShortcut extends ConnectorAbstract
 {

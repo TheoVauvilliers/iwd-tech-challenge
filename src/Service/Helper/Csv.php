@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Service\Helper;
 
 use Symfony\Component\Finder\Finder;
 

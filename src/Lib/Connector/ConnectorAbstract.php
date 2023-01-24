@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Libs\Connector;
+namespace App\Lib\Connector;
 
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
