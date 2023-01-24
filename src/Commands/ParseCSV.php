@@ -60,18 +60,27 @@ class ParseCSV extends Command
 
         // TODO: Load csv file
 
+        // Get epics and create an associative array
+        $epics = $connector->call('GET', 'epics');
+        $epics = array_reduce($epics, function ($epics, $epic) {
+            $epics[$epic['name']] = $epic['id'];
+            return $epics;
+        }, []);
+        var_dump($epics);
+
         // TODO: Insert data on shortcut App
         // Get project_id
-        $project = $connector->call('GET', 'projects');
-        $project_id = current($project)['id'];
+//        $project = $connector->call('GET', 'projects');
+//        $project_id = current($project)['id'];
 
-        $data = [
-            'name' => 'Story from CLI',
-            'project_id' => $project_id,
-        ];
 
-        $story = $connector->call('POST', 'stories', $data, 'json');
-        var_dump($story);
+//        $data = [
+//            'name' => 'Story from CLI',
+//            'project_id' => $project_id,
+//        ];
+//
+//        $story = $connector->call('POST', 'stories', $data, 'json');
+//        var_dump($story);
 
         return Command::SUCCESS;
     }
