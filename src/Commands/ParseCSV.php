@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use App\Connectors\ConnectorShortcut;
+use App\Services\Csv;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -22,6 +23,13 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 )]
 class ParseCSV extends Command
 {
+    // CSV => SHORCUT
+    protected const MAPPING = [
+        'description' => '',
+        'status' => '',
+        'epic' => '',
+        'blocked by' => ''
+    ];
     protected bool $requireFileName = true;
 
     public function __construct(string $name = null)
@@ -43,11 +51,6 @@ class ParseCSV extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
-     * @throws ClientExceptionInterface
-     * @throws DecodingExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws TransportExceptionInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -55,18 +58,20 @@ class ParseCSV extends Command
             throw new \LogicException('This command accepts only an instance of "ConsoleOutputInterface".');
         }
 
-        // TODO: Init the connector
         $connector = new ConnectorShortcut();
 
-        // TODO: Load csv file
+        // Transform csv in array
+        $csv = new Csv();
+        $data = $csv->read($input->getArgument('csv-name'));
+        var_dump($data);
 
         // Get epics and create an associative array
-        $epics = $connector->call('GET', 'epics');
-        $epics = array_reduce($epics, function ($epics, $epic) {
-            $epics[$epic['name']] = $epic['id'];
-            return $epics;
-        }, []);
-        var_dump($epics);
+//        $epics = $connector->call('GET', 'epics');
+//        $epics = array_reduce($epics, function ($epics, $epic) {
+//            $epics[$epic['name']] = $epic['id'];
+//            return $epics;
+//        }, []);
+//        var_dump($epics);
 
         // TODO: Insert data on shortcut App
         // Get project_id
