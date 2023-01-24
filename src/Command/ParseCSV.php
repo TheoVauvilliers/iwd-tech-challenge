@@ -101,6 +101,10 @@ class ParseCSV extends Command
         foreach ($data as $row) {
             try {
                 $story = $this->connector->call('POST', 'stories', $row, 'json');
+
+                // TODO: Call to create Story-Links
+                // https://developer.shortcut.com/api/rest/v3#Create-Story-Link
+
                 $output->writeln([
                     'The story ' . $row['name'] . ' has been created',
                 ]);
