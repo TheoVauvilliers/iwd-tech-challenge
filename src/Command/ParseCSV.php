@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Service\Connector\ConnectorShortcut;
 use App\Service\Helper\Csv;
+use App\Service\Helper\ShortcutHelper;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -26,13 +27,6 @@ class ParseCSV extends Command
         'blocked by' => 'description' // TODO: CHANGE THIS !
     ];
     protected bool $requireFileName = true;
-    protected ?ConnectorShortcut $connector = null;
-
-    public function __construct(string $name = null)
-    {
-        $this->connector = new ConnectorShortcut();
-        parent::__construct($name);
-    }
 
     protected function configure(): void
     {
@@ -60,27 +54,18 @@ class ParseCSV extends Command
         $rows = $csv->read($input->getArgument('csv-name'));
         $rows = $csv->headerAsAssocArray($rows);
 
-        // Get project_id
-        $project = $this->connector->call('GET', 'projects');
-        $projectId = current($project)['id'];
-        unset($project);
+        $shortcut = new ShortcutHelper();
 
-        // Get workflow
-        $workfows = $this->connector->call('GET', 'workflows');
-
-        // Extract states and create an associative array
-        $states = array_reduce(current($workfows)['states'], function ($states, $state) {
-            $states[$state['name']] = $state['id'];
-            return $states;
-        }, []);
-        unset($workfows);
+        // Get projectId
+        $projectId = current($shortcut->getProjects())['id'];
 
         // Get epics and create an associative array
-        $epics = $this->connector->call('GET', 'epics');
-        $epics = array_reduce($epics, function ($epics, $epic) {
-            $epics[$epic['name']] = $epic['id'];
-            return $epics;
-        }, []);
+        $epics = $shortcut->getEpics();
+        $epics = $shortcut->dataToAssocArray($epics);
+
+        // Get workflow, extract states and create an associative array
+        $workfows = $shortcut->getWorkflows();
+        $states = $shortcut->dataToAssocArray(current($workfows)['states']);
 
         // Generate an array containing all the information to push to the API
         $data = array_map(function ($row) use ($epics, $states, $projectId) {
@@ -100,7 +85,7 @@ class ParseCSV extends Command
 
         foreach ($data as $row) {
             try {
-                $story = $this->connector->call('POST', 'stories', $row, 'json');
+//                $story = $shortcut->pushStory($row);
 
                 // TODO: Call to create Story-Links
                 // https://developer.shortcut.com/api/rest/v3#Create-Story-Link
