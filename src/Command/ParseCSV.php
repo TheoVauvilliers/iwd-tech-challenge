@@ -2,7 +2,6 @@
 
 namespace App\Command;
 
-use App\Service\Connector\ConnectorShortcut;
 use App\Service\Helper\Csv;
 use App\Service\Helper\ShortcutHelper;
 use Symfony\Component\Console\Attribute\AsCommand;

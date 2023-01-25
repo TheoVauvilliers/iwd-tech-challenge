@@ -2,7 +2,7 @@
 
 namespace App\Service\Helper;
 
-use App\Service\Connector\ConnectorShortcut;
+use App\Service\Connector\ShortcutConnector;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -11,11 +11,11 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class ShortcutHelper
 {
-    protected ?ConnectorShortcut $connector = null;
+    protected ?ShortcutConnector $connector = null;
 
     public function __construct()
     {
-        $this->connector = new ConnectorShortcut();
+        $this->connector = new ShortcutConnector();
     }
 
     /**

@@ -4,7 +4,7 @@ namespace App\Service\Connector;
 
 use App\Lib\Connector\ConnectorAbstract;
 
-class ConnectorShortcut extends ConnectorAbstract
+class ShortcutConnector extends ConnectorAbstract
 {
     protected const API_BASE_URL = 'https://api.app.shortcut.com/api/v3/';
 
@@ -13,7 +13,7 @@ class ConnectorShortcut extends ConnectorAbstract
      */
     protected function getBaseUrl(): string
     {
-        return !empty($_ENV['API_SHORTCUT_BASE_URL']) ? $_ENV['API_SHORTCUT_BASE_URL'] : ConnectorShortcut::API_BASE_URL;
+        return !empty($_ENV['API_SHORTCUT_BASE_URL']) ? $_ENV['API_SHORTCUT_BASE_URL'] : ShortcutConnector::API_BASE_URL;
     }
 
     /**
