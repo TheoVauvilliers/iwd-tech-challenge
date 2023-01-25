@@ -12,11 +12,12 @@ use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'iwd:parse-csv',
+    name: 'iwd:csv-to-shortcut',
+    aliases: ['iwd:cts'],
     description: 'This command allows you to parse a csv file...',
     hidden: false
 )]
-class ParseCSV extends Command
+class CsvToShortcut extends Command
 {
     // CSV => SHORCUT
     protected const MAPPING = [
