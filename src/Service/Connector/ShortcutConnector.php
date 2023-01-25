@@ -13,7 +13,7 @@ class ShortcutConnector extends ConnectorAbstract
      */
     protected function getBaseUrl(): string
     {
-        return !empty($_ENV['API_SHORTCUT_BASE_URL']) ? $_ENV['API_SHORTCUT_BASE_URL'] : ShortcutConnector::API_BASE_URL;
+        return !empty($_ENV['API_SHORTCUT_BASE_URL']) ? $_ENV['API_SHORTCUT_BASE_URL'] : self::API_BASE_URL;
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Service\Helper\Csv;
+use App\Service\Helper\CsvHelper;
 use App\Service\Helper\ShortcutHelper;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -49,7 +49,7 @@ class ParseCSV extends Command
         }
 
         // Transform csv in array
-        $csv = new Csv();
+        $csv = new CsvHelper();
         $rows = $csv->read($input->getArgument('csv-name'));
         $rows = $csv->headerAsAssocArray($rows);
 

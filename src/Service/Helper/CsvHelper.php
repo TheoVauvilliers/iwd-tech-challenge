@@ -4,7 +4,7 @@ namespace App\Service\Helper;
 
 use Symfony\Component\Finder\Finder;
 
-class Csv
+class CsvHelper
 {
     protected const DIRECTORY = 'public/uploads';
     protected const IGNORE_FIRST_LINE = false;
