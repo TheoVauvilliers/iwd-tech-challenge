@@ -70,7 +70,9 @@ class ShortcutHelper
     }
 
     /**
-     * @param array $story
+     * @param string $endpoint
+     * @param array $data
+     * @param string $dataType
      * @return array
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
@@ -78,8 +80,8 @@ class ShortcutHelper
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function pushStory(array $data): array
+    public function push(string $endpoint, array $data, string $dataType = 'json'): array
     {
-        return $this->connector->call('POST', 'stories', $data, 'json');
+        return $this->connector->call('POST', $endpoint, $data, $dataType);
     }
 }

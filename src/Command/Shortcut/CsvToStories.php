@@ -90,7 +90,7 @@ class CsvToStories extends Command
 
         foreach ($data as $row) {
             try {
-//                $story = $this->shortcut->pushStory($row);
+//                $story = $this->shortcut->push('stories', $row);
 
                 // TODO: Call to create Story-Links
                 // https://developer.shortcut.com/api/rest/v3#Create-Story-Link
