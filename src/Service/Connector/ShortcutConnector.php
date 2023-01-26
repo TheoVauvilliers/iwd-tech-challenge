@@ -2,7 +2,7 @@
 
 namespace App\Service\Connector;
 
-use App\Lib\Connector\ConnectorAbstract;
+use App\Service\Abstract\Connector\ConnectorAbstract;
 
 class ShortcutConnector extends ConnectorAbstract
 {

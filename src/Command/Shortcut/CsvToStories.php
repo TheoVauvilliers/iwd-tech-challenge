@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Shortcut;
 
+use App\Utils\ShortcutUtils;
 use App\Service\Helper\CsvHelper;
 use App\Service\Helper\ShortcutHelper;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -10,14 +11,19 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 #[AsCommand(
-    name: 'iwd:csv-to-shortcut',
-    aliases: ['iwd:cts'],
+    name: 'iwd:shortcut:csv-to-stories',
     description: 'This command allows you to parse a csv file...',
+    aliases: ['iwd:s:cs', 'i:s:cs'],
     hidden: false
 )]
-class CsvToShortcut extends Command
+class CsvToStories extends Command
 {
     // CSV => SHORCUT
     protected const MAPPING = [
@@ -27,6 +33,16 @@ class CsvToShortcut extends Command
         'blocked by' => 'description' // TODO: CHANGE THIS !
     ];
     protected bool $requireFileName = true;
+    protected ?CsvHelper $csv = null;
+    protected ?ShortcutHelper $shortcut = null;
+
+    public function __construct(string $name = null)
+    {
+        parent::__construct($name);
+
+        $this->csv = new CsvHelper();
+        $this->shortcut = new ShortcutHelper();
+    }
 
     protected function configure(): void
     {
@@ -42,6 +58,11 @@ class CsvToShortcut extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -50,42 +71,26 @@ class CsvToShortcut extends Command
         }
 
         // Transform csv in array
-        $csv = new CsvHelper();
-        $rows = $csv->read($input->getArgument('csv-name'));
-        $rows = $csv->headerAsAssocArray($rows);
-
-        $shortcut = new ShortcutHelper();
+        $rows = $this->csv->read($input->getArgument('csv-name'));
+        $rows = $this->csv->headerAsAssocArray($rows);
 
         // Get projectId
-        $projectId = current($shortcut->getProjects())['id'];
+        $projectId = current($this->shortcut->getProjects())['id'];
 
         // Get epics and create an associative array
-        $epics = $shortcut->getEpics();
-        $epics = $shortcut->dataToAssocArray($epics);
+        $epics = $this->shortcut->getEpics();
+        $epics = $this->shortcut->dataToAssocArray($epics);
 
         // Get workflow, extract states and create an associative array
-        $workfows = $shortcut->getWorkflows();
-        $states = $shortcut->dataToAssocArray(current($workfows)['states']);
+        $workfows = $this->shortcut->getWorkflows();
+        $states = $this->shortcut->dataToAssocArray(current($workfows)['states']);
 
         // Generate an array containing all the information to push to the API
-        $data = array_map(function ($row) use ($epics, $states, $projectId) {
-            $row = array_combine(self::MAPPING, $row);
-
-            foreach ($row as $key => $value) {
-                // Epic name to epic id
-                $row[$key] = $this->replaceNameById($key, $value, $row, $epics);
-                // State name to State id
-                $row[$key] = $this->replaceNameById($key, $value, $row, $states);
-            }
-
-            $row['project_id'] = $projectId;
-
-            return $row;
-        }, $rows);
+        $data = ShortcutUtils::generatePostDataStories($rows, [$states, $epics], $projectId, self::MAPPING);
 
         foreach ($data as $row) {
             try {
-//                $story = $shortcut->pushStory($row);
+//                $story = $this->shortcut->pushStory($row);
 
                 // TODO: Call to create Story-Links
                 // https://developer.shortcut.com/api/rest/v3#Create-Story-Link
