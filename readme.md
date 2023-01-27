@@ -62,7 +62,7 @@ OR
 $ php bin/console i:s:pc
 ```
 
-## Explication et axes d'amélioration possible
+## Explications et axes d'améliorations possibles
 
 ### Choix technique
 
@@ -78,7 +78,7 @@ optionnel du challenge est de faire une UI, pas très pratique non plus en Pytho
 Le choix final s'est donc porté sur du PHP et plus précisément Symfony. Je suis parti de la base la plus vide possible
 et j'y ai ajouté les composants nécessaires afin d'avoir une app relativement légère.
 
-### Difficulté rencontré
+### Difficultés rencontréss
 
 Le point le plus ennuyant auquel j'ai été confronté est la doc de l'API Shortcut... Elle est incomplète ce qui m'a fait
 perdre beaucoup de temps à devoir trouver ce qui n'allait pas dans mes calls APIs. <br>
@@ -89,7 +89,7 @@ Un autre point où je suis souvent retourné dessus est l'architecture de mon pr
 architectures. Si vous prêtez attention aux commits sur le repo, il y en a plusieurs pour refaire et/ou modifier
 l'architecture.
 
-### Amélioration
+### Améliorations
 
 Une feature qui pourrait être très pratique est qu'au lieu de passer le nom du fichier en paramètres de la commande,
 celle-ci liste tous les fichiers csv du dossier public/uploads et qu'on puisse choisir avec les flèches
