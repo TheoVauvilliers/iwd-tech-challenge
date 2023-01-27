@@ -6,10 +6,14 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'App\\Commands\\ParseCSV' => $baseDir . '/src/Commands/ParseCSV.php',
-    'App\\Connectors\\ConnectorShortcut' => $baseDir . '/src/Connectors/ConnectorShortcut.php',
+    'App\\Command\\Shortcut\\CsvToStories' => $baseDir . '/src/Command/Shortcut/CsvToStories.php',
+    'App\\Command\\Shortcut\\InitProject' => $baseDir . '/src/Command/Shortcut/InitProject.php',
     'App\\Kernel' => $baseDir . '/src/Kernel.php',
-    'App\\Libs\\Connector\\ConnectorAbstract' => $baseDir . '/src/Libs/Connector/ConnectorAbstract.php',
+    'App\\Service\\Abstract\\Connector\\ConnectorAbstract' => $baseDir . '/src/Service/Abstract/Connector/ConnectorAbstract.php',
+    'App\\Service\\Connector\\ShortcutConnector' => $baseDir . '/src/Service/Connector/ShortcutConnector.php',
+    'App\\Service\\Helper\\CsvHelper' => $baseDir . '/src/Service/Helper/CsvHelper.php',
+    'App\\Service\\Helper\\ShortcutHelper' => $baseDir . '/src/Service/Helper/ShortcutHelper.php',
+    'App\\Utils\\ShortcutUtils' => $baseDir . '/src/Utils/ShortcutUtils.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'JsonException' => $vendorDir . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
