@@ -151,6 +151,4 @@ class CsvToStories extends Command
 
         return Command::SUCCESS;
     }
-
-    // TODO: Rearrange the stories in the correct order to be able to create the "is blocked by" relationships
 }
