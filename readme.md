@@ -78,7 +78,7 @@ optionnel du challenge est de faire une UI, pas très pratique non plus en Pytho
 Le choix final s'est donc porté sur du PHP et plus précisément Symfony. Je suis parti de la base la plus vide possible
 et j'y ai ajouté les composants nécessaires afin d'avoir une app relativement légère.
 
-### Difficultés rencontréss
+### Difficultés rencontrés
 
 Le point le plus ennuyant auquel j'ai été confronté est la doc de l'API Shortcut... Elle est incomplète ce qui m'a fait
 perdre beaucoup de temps à devoir trouver ce qui n'allait pas dans mes calls APIs. <br>
