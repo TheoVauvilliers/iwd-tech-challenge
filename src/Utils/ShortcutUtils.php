@@ -50,6 +50,10 @@ class ShortcutUtils
         return $row[$key];
     }
 
+    /**
+     * @param array $stories
+     * @return array
+     */
     public static function generateStoryLinks(array $stories): array
     {
         $storyLinks = [];
@@ -77,5 +81,4 @@ class ShortcutUtils
 
         return $storyLinks;
     }
-
 }

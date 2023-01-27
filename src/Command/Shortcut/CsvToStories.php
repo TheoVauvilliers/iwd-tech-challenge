@@ -7,6 +7,7 @@ use App\Service\Helper\CsvHelper;
 use App\Service\Helper\ShortcutHelper;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
@@ -88,6 +89,9 @@ class CsvToStories extends Command
         // Generate an array containing all the information to push to the API
         $data = ShortcutUtils::generatePostDataStories($rows, [$states, $epics], $projectId, self::MAPPING);
 
+        $progressBar = new ProgressBar($output, count($data));
+        $output->writeln('Creating stories...');
+
         $stories = [];
         foreach ($data as $row) {
             $storyData = $row;
@@ -97,9 +101,7 @@ class CsvToStories extends Command
                 $story = $this->shortcut->create('stories', $storyData);
                 $stories[] = array_merge($row, $story);
 
-                $output->writeln([
-                    'The story ' . $story['name'] . ' has been created',
-                ]);
+                $progressBar->advance();
             } catch (\Throwable $t) {
                 $output->writeln([
                     'Impossible to create this story : ' . $row['name'],
@@ -108,7 +110,19 @@ class CsvToStories extends Command
             }
         }
 
+        $progressBar->finish();
+        $output->writeln('');
+
         $storiesLinks = ShortcutUtils::generateStoryLinks($stories);
+
+        $nbLinks = 0;
+        foreach ($storiesLinks as $storyLinks) {
+            $nbLinks += count($storyLinks['parents']);
+        }
+
+        $progressBar = new ProgressBar($output, $nbLinks);
+
+        $output->writeln('Creating links...');
 
         foreach ($storiesLinks as $storyLinks) {
             foreach ($storyLinks['parents'] as $storyLink) {
@@ -119,11 +133,9 @@ class CsvToStories extends Command
                 ];
 
                 try {
-                    $link = $this->shortcut->create('story-links', $data);
+                    $this->shortcut->create('story-links', $data);
 
-                    $output->writeln([
-                        'The link ' . $link['object_id'] . ' ' . $link['verb'] . ' ' . $link['subject_id'] . ' has been created',
-                    ]);
+                    $progressBar->advance();
                 } catch (\Throwable $t) {
                     $output->writeln([
                         'Impossible to link for this story : ' . $storyLinks['id'],
@@ -133,6 +145,9 @@ class CsvToStories extends Command
                 }
             }
         }
+
+        $progressBar->finish();
+        $output->writeln('');
 
         return Command::SUCCESS;
     }
