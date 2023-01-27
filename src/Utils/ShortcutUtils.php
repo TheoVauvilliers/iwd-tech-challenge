@@ -49,4 +49,33 @@ class ShortcutUtils
 
         return $row[$key];
     }
+
+    public static function generateStoryLinks(array $stories): array
+    {
+        $storyLinks = [];
+
+        foreach ($stories as $story) {
+            // If the story is not blocked by other stories
+            if (empty($story['blocked_by'])) continue;
+
+            // Find parent stories
+            $parents = array_filter($stories, function ($filterStory) use ($story) {
+                return $filterStory['name'] === $story['blocked_by'];
+            });
+
+            // Prepare parent story array
+            $storyLinksParents = [];
+            foreach ($parents as $parent) {
+                $storyLinksParents[]['id'] = $parent['id'];
+            }
+
+            $storyLinks[] = [
+                'id' => $story['id'],
+                'parents' => $storyLinksParents,
+            ];
+        }
+
+        return $storyLinks;
+    }
+
 }

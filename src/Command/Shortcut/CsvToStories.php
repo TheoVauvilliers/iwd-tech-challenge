@@ -30,7 +30,7 @@ class CsvToStories extends Command
         'description' => 'name',
         'status' => 'workflow_state_id',
         'epic' => 'epic_id',
-        'blocked by' => 'description' // TODO: CHANGE THIS !
+        'blocked by' => 'blocked_by'
     ];
     protected bool $requireFileName = true;
     protected ?CsvHelper $csv = null;
@@ -88,15 +88,17 @@ class CsvToStories extends Command
         // Generate an array containing all the information to push to the API
         $data = ShortcutUtils::generatePostDataStories($rows, [$states, $epics], $projectId, self::MAPPING);
 
+        $stories = [];
         foreach ($data as $row) {
-            try {
-//                $story = $this->shortcut->push('stories', $row);
+            $storyData = $row;
+            unset($storyData['blocked_by']);
 
-                // TODO: Call to create Story-Links
-                // https://developer.shortcut.com/api/rest/v3#Create-Story-Link
+            try {
+                $story = $this->shortcut->create('stories', $storyData);
+                $stories[] = array_merge($row, $story);
 
                 $output->writeln([
-                    'The story ' . $row['name'] . ' has been created',
+                    'The story ' . $story['name'] . ' has been created',
                 ]);
             } catch (\Throwable $t) {
                 $output->writeln([
@@ -106,17 +108,33 @@ class CsvToStories extends Command
             }
         }
 
-        return Command::SUCCESS;
-    }
+        $storiesLinks = ShortcutUtils::generateStoryLinks($stories);
 
-    protected function replaceNameById(string $key, string $value, array $row, array $data): string
-    {
-        // If the value exists on the application, returns the corresponding id, otherwise returns its own value
-        if (in_array($value, array_keys($data))) {
-            return $data[$value];
+        foreach ($storiesLinks as $storyLinks) {
+            foreach ($storyLinks['parents'] as $storyLink) {
+                $data = [
+                    'object_id' => $storyLinks['id'],
+                    'subject_id' => $storyLink['id'],
+                    'verb' => 'blocks'
+                ];
+
+                try {
+                    $link = $this->shortcut->create('story-links', $data);
+
+                    $output->writeln([
+                        'The link ' . $link['object_id'] . ' ' . $link['verb'] . ' ' . $link['subject_id'] . ' has been created',
+                    ]);
+                } catch (\Throwable $t) {
+                    $output->writeln([
+                        'Impossible to link for this story : ' . $storyLinks['id'],
+                        'Parent : ' . $storyLink['id'],
+                        'Error : ' . $t->getMessage(),
+                    ]);
+                }
+            }
         }
 
-        return $row[$key];
+        return Command::SUCCESS;
     }
 
     // TODO: Rearrange the stories in the correct order to be able to create the "is blocked by" relationships

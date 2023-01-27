@@ -80,7 +80,7 @@ class ShortcutHelper
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function push(string $endpoint, array $data, string $dataType = 'json'): array
+    public function create(string $endpoint, array $data, string $dataType = 'json'): array
     {
         return $this->connector->call('POST', $endpoint, $data, $dataType);
     }
